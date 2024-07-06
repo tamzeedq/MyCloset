@@ -1,16 +1,32 @@
 import { StyleSheet, Pressable } from 'react-native';
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
-import Gallery from '@/components/Gallery'; // Correct import
+import Gallery from '@/components/Gallery'; 
+import { useState } from 'react';
 
 export default function ClosetScreen() {
+  const [isOutfit, setIsOutfit] = useState(true);
+
   return (
     <View style={styles.container}>
       <View style={styles.btnGroup}>
-        <Pressable style={[styles.button, styles.leftButton]}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            styles.leftButton,
+            isOutfit && styles.activeButton,
+          ]}
+          onPress={() => setIsOutfit(true)}
+        >
           <Text style={styles.buttonText}>Outfit</Text>
         </Pressable>
-        <Pressable style={[styles.button, styles.rightButton]}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            styles.rightButton,
+            !isOutfit && styles.activeButton,
+          ]}
+          onPress={() => setIsOutfit(false)}
+        >
           <Text style={styles.buttonText}>Item</Text>
         </Pressable>
       </View>
@@ -61,5 +77,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 16,
+  },
+  activeButton: {
+    backgroundColor: '#005BB5',
   },
 });

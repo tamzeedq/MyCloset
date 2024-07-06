@@ -1,26 +1,46 @@
-import { StyleSheet, FlatList, Image, View, Text } from 'react-native';
+import { StyleSheet, FlatList, Image, View, Text, useColorScheme } from 'react-native';
 import React from 'react';
-import icon from "../assets/images/favicon.png";
+import icon from "../assets/images/test_icon.png";
 
-const images = [
+// Define the interface for the image item
+interface ImageItem {
+  id: string;
+  src: typeof icon;
+}
+
+const images: ImageItem[] = [
   { id: '1', src: icon },
   { id: '2', src: icon },
   { id: '3', src: icon },
   { id: '4', src: icon },
+  { id: '5', src: icon },
+  { id: '6', src: icon },
+  { id: '7', src: icon },
+  { id: '8', src: icon },
+  { id: '28', src: icon },
+  { id: '38', src: icon },
+  { id: '48', src: icon },
+  { id: '9', src: icon },
   // Add more images as needed
 ];
 
 export default function Gallery() {
-  const renderItem = ({ item }) => (
+  const colorScheme = useColorScheme(); // Get the current color scheme
+  const isDarkMode = colorScheme === 'dark';
+
+  const renderItem = ({ item }: { item: ImageItem }) => (
     <View style={styles.imageContainer}>
-      <Image source={item} style={styles.image} />
+      <Image source={item.src} style={styles.image} />
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Gallery</Text>
+      <Text style={[styles.title, { color: isDarkMode ? 'white' : 'black' }]}>
+        Gallery
+      </Text>
       <FlatList
+        style={styles.galleryContainer}
         data={images}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
@@ -35,24 +55,27 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
+    width: '100%',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    width: '95%',
+  },
+  galleryContainer: {
+    width: '95%',
   },
   imageContainer: {
     flex: 1,
     margin: 5,
-    aspectRatio: 1, // Keeps images square
-    borderWidth: 2, // Add border width
-    borderColor: '#007AFF', // Add border color
-    borderRadius: 10, // Add border radius
-    overflow: 'hidden', // Ensure the image fits within the border radius
+    justifyContent: 'center',
+    alignItems: 'center',
+    aspectRatio: 0.75,
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
+    resizeMode: 'cover',
   },
 });
