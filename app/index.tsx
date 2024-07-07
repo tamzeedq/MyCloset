@@ -3,6 +3,7 @@ import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
 import welcomeGIF from "../assets/images/welcome_gif.webp";
+import { BLACK, WHITE } from '@/constants/Colors';
 
 
 export default function HomeScreen() {
@@ -11,11 +12,11 @@ export default function HomeScreen() {
     const onPress = () => {router.push('/closet')}
 
     return (
-        <ImageBackground
-            source={welcomeGIF}
-            resizeMode="cover"
-            style={styles.imgContainer}
-        >    
+        // <ImageBackground
+        //     source={welcomeGIF}
+        //     resizeMode="cover"
+        //     style={styles.imgContainer}
+        // >    
             <View style={styles.container}>
                 <Text style={styles.title}>My Closet</Text>
                 <Text style={styles.text}>Welcome!</Text>
@@ -23,7 +24,7 @@ export default function HomeScreen() {
                     <Text style={styles.text}>Proceed</Text>
                 </Pressable>
             </View>
-        </ImageBackground>
+        // </ImageBackground>
     );
 }
 
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
     gap: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: '#ccc5b9',
     width: '100%',
   },
   imgContainer: {
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 65,
     fontWeight: 'bold',
-    color: 'white',
+    color: WHITE,
     fontFamily: 'serif',
   },
   separator: {
@@ -61,13 +62,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 4,
     elevation: 3,
-    backgroundColor: 'black',
+    backgroundColor: BLACK,
   },
   text: {
     fontSize: 16,
     lineHeight: 21,
     fontWeight: 'bold',
     letterSpacing: 0.25,
-    color: 'white',
+    color: WHITE,
   },
 });

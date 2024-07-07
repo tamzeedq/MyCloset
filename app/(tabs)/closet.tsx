@@ -2,6 +2,7 @@ import { StyleSheet, Pressable } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import Gallery from '@/components/Gallery'; 
 import { useState } from 'react';
+import { BACKGROUND, BLACK, GREY, WHITE } from '@/constants/Colors';
 
 export default function ClosetScreen() {
   const [isOutfit, setIsOutfit] = useState(true);
@@ -40,6 +41,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: BACKGROUND,
   },
   title: {
     fontSize: 20,
@@ -56,9 +58,10 @@ const styles = StyleSheet.create({
     width: '80%',
     marginBottom: 20,
     marginTop: 20,
+    backgroundColor: BACKGROUND,
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: GREY,
     paddingVertical: 10,
     flex: 1,
     alignItems: 'center',
@@ -75,10 +78,10 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 10,
   },
   buttonText: {
-    color: 'white',
+    color: WHITE,
     fontSize: 16,
   },
   activeButton: {
-    backgroundColor: '#005BB5',
+    backgroundColor: BLACK,
   },
 });
