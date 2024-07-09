@@ -2,7 +2,6 @@ import { ImageBackground, Pressable, StyleSheet } from 'react-native';
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import { useRouter } from 'expo-router';
-import welcomeGIF from "../assets/images/welcome_gif.webp";
 import { BLACK, WHITE } from '@/constants/Colors';
 
 
@@ -12,19 +11,13 @@ export default function HomeScreen() {
     const onPress = () => {router.push('/closet')}
 
     return (
-        // <ImageBackground
-        //     source={welcomeGIF}
-        //     resizeMode="cover"
-        //     style={styles.imgContainer}
-        // >    
-            <View style={styles.container}>
-                <Text style={styles.title}>My Closet</Text>
-                <Text style={styles.text}>Welcome!</Text>
-                <Pressable style={styles.button} onPress={onPress}>
-                    <Text style={styles.text}>Proceed</Text>
-                </Pressable>
-            </View>
-        // </ImageBackground>
+      <View style={styles.container}>
+          <Text style={styles.title}>My Closet</Text>
+          <Text style={styles.text}>Welcome!</Text>
+          <Pressable style={styles.button} onPress={onPress}>
+              <Text style={styles.text}>Proceed</Text>
+          </Pressable>
+      </View>
     );
 }
 

@@ -1,6 +1,7 @@
 import { StyleSheet, Pressable } from 'react-native';
 import { Text, View } from '@/components/Themed';
-import Gallery from '@/components/Gallery'; 
+import OutfitGallery from '@/components/OutfitGallery'; 
+import ItemGallery from '@/components/ItemGallery'; 
 import { useState } from 'react';
 import { BACKGROUND, BLACK, GREY, WHITE } from '@/constants/Colors';
 
@@ -31,7 +32,7 @@ export default function ClosetScreen() {
           <Text style={styles.buttonText}>Item</Text>
         </Pressable>
       </View>
-      <Gallery />
+      {isOutfit ? <OutfitGallery />:<ItemGallery />}
     </View>
   );
 }
@@ -59,6 +60,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 20,
     backgroundColor: BACKGROUND,
+  },
+  btnGrp: {
+    backgroundColor: GREY,
   },
   button: {
     backgroundColor: GREY,

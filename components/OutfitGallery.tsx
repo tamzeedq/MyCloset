@@ -1,14 +1,10 @@
 import { StyleSheet, FlatList, Image, View, Text, useColorScheme } from 'react-native';
 import React from 'react';
-import icon from "../assets/images/test_icon.png";
+import icon from "../assets/images/fitpic.jpg";
+import { Item } from '@/constants/Interfaces';
+import ItemCard from '@/components/ItemCard';
 
-// Define the interface for the image item
-interface ImageItem {
-  id: string;
-  src: typeof icon;
-}
-
-const images: ImageItem[] = [
+const images: Item[] = [
   { id: '1', src: icon },
   { id: '2', src: icon },
   { id: '3', src: icon },
@@ -24,14 +20,12 @@ const images: ImageItem[] = [
   // Add more images as needed
 ];
 
-export default function Gallery() {
+export default function OutfitGallery() {
   const colorScheme = useColorScheme(); // Get the current color scheme
   const isDarkMode = colorScheme === 'dark';
 
-  const renderItem = ({ item }: { item: ImageItem }) => (
-    <View style={styles.imageContainer}>
-      <Image source={item.src} style={styles.image} />
-    </View>
+  const renderItem = ({ item }: { item: Item }) => (
+    <ItemCard item={item} />
   );
 
   return (
