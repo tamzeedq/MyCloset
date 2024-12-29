@@ -8,6 +8,9 @@ import whiteGradient from "@/assets/images/white-gradient.png";
 import map from "@/assets/images/map.png";
 import noResult from "@/assets/images/no-result.png";
 
+
+import spiderman from "@/assets/images/spiderman.png";
+
 export default {
   onboarding,
   avatar,
@@ -18,4 +21,5 @@ export default {
   whiteGradient,
   map,
   noResult,
+  spiderman
 };

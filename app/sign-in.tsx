@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
 import { login } from "@/lib/appwrite";
 import { Redirect } from "expo-router";
 import { useGlobalContext } from "@/lib/global-provider";
@@ -30,35 +29,45 @@ const Auth = () => {
   };
 
   return (
-    <SafeAreaView className="bg-white h-full">
+    <SafeAreaView className="h-full bg-[#FFEBE7]">
       <ScrollView
         contentContainerStyle={{
           height: "100%",
+          justifyContent: "space-between",
         }}
       >
-        <Image
-          source={images.onboarding}
-          className="w-full h-4/6"
-          resizeMode="contain"
-        />
-
-        <View className="px-10">
-          <Text className="text-base text-center uppercase font-rubik text-black-200">
-            Welcome To Real Scout
+        
+        <View className="px-6 py-8">
+          <Image
+            source={images.spiderman}
+            className="w-full h-72"
+            resizeMode="contain"
+          />
+        </View>
+        <View className="px-6 pt-12">
+          <Text className="text-[#2D3142] text-4xl font-rubik-bold text-center">
+              My{" "}
+            <Text className="text-[#DA4167]">
+              Closet
+            </Text>
           </Text>
-
-          <Text className="text-3xl font-rubik-bold text-black-300 text-center mt-2">
-            Let's Get You Closer To {"\n"}
-            <Text className="text-primary-300">Your Ideal Home</Text>
+          <Text className="text-[#4F5D75] text-lg font-rubik text-center mt-2 opacity-80">
+            Your Personal Style Companion
           </Text>
+        </View>
 
-          <Text className="text-lg font-rubik text-black-200 text-center mt-12">
-            Login to Real Scout with Google
+
+        <View className="px-6 pb-12 pt-12">
+          {/* <Text className="text-[#E63462] text-2xl font-rubik-bold text-center mb-3">
+            Welcome!
+          </Text> */}
+          <Text className="text-[#4F5D75] text-base font-rubik text-center mb-8 opacity-80">
+            Track, organize, and discover your perfect outfits
           </Text>
 
           <TouchableOpacity
             onPress={handleLogin}
-            className="bg-white shadow-md shadow-zinc-300 rounded-full w-full py-4 mt-5"
+            className="bg-[#2D3142] rounded-xl w-full py-4 shadow-lg"
           >
             <View className="flex flex-row items-center justify-center">
               <Image
@@ -66,11 +75,15 @@ const Auth = () => {
                 className="w-5 h-5"
                 resizeMode="contain"
               />
-              <Text className="text-lg font-rubik-medium text-black-300 ml-2">
+              <Text className="text-[#FFEBE7] text-lg font-rubik-medium ml-2">
                 Continue with Google
               </Text>
             </View>
           </TouchableOpacity>
+
+          <Text className="text-[#4F5D75] text-sm font-rubik text-center mt-6 opacity-70">
+            Digitize your closet today!
+          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
