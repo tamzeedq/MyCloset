@@ -18,6 +18,7 @@ import NoResults from "@/components/NoResults";
 
 import { getProperties } from "@/lib/appwrite";
 import { useAppwrite } from "@/hooks/useAppwrite";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const Explore = () => {
   const params = useLocalSearchParams<{ query?: string; filter?: string }>();
@@ -45,52 +46,22 @@ const Explore = () => {
   const handleCardPress = (id: string) => router.push(`/properties/${id}`);
 
   return (
-    <SafeAreaView className="h-full bg-white">
-      <FlatList
-        data={properties}
-        numColumns={2}
-        renderItem={({ item }) => (
-          <Card item={item} onPress={() => handleCardPress(item.$id)} />
-        )}
-        keyExtractor={(item) => item.$id}
-        contentContainerClassName="pb-32"
-        columnWrapperClassName="flex gap-5 px-5"
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={
-          loading ? (
-            <ActivityIndicator size="large" className="text-primary-300 mt-5" />
-          ) : (
-            <NoResults />
-          )
-        }
-        ListHeaderComponent={() => (
-          <View className="px-5">
-            <View className="flex flex-row items-center justify-between mt-5">
-              <TouchableOpacity
-                onPress={() => router.back()}
-                className="flex flex-row bg-primary-200 rounded-full size-11 items-center justify-center"
-              >
-                <Image source={icons.backArrow} className="size-5" />
-              </TouchableOpacity>
-
-              <Text className="text-base mr-2 text-center font-rubik-medium text-black-300">
-                Search for Your Ideal Home
-              </Text>
-              <Image source={icons.bell} className="w-6 h-6" />
-            </View>
-
-            <Search />
-
-            <View className="mt-5">
-              <Filters />
-
-              <Text className="text-xl font-rubik-bold text-black-300 mt-5">
-                Found {properties?.length} Properties
-              </Text>
-            </View>
-          </View>
-        )}
-      />
+    <SafeAreaView className="flex-1 bg-[#FFEBE7]">
+      <View className="flex-1 items-center justify-center px-6">
+        <View className="px-6 py-8 items-center">
+          <MaterialIcons 
+            name="checkroom" 
+            size={200} 
+            color="#2D3142" 
+          />
+        </View>
+        <Text className="text-2xl font-rubik-bold text-[#2D3142] mb-4">
+          Coming Soon!
+        </Text>
+        <Text className="text-base font-rubik text-[#4F5D75] text-center opacity-80">
+          We're working on something special for you. Stay tuned for new features and updates!
+        </Text>
+      </View>
     </SafeAreaView>
   );
 };
