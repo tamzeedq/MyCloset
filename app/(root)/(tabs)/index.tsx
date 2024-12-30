@@ -10,6 +10,7 @@ import {
   Modal,
 } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
+import * as Location from 'expo-location';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -20,47 +21,9 @@ import { useAppwrite } from "@/hooks/useAppwrite";
 import { useGlobalContext } from "@/lib/global-provider";
 import { getLatestProperties, getProperties } from "@/lib/appwrite";
 import images from "@/constants/images";
+import { HourlyForecast, ImageListProps, WeatherData } from '@/constants/interfaces';
+import WeatherModal from '@/components/WeatherModal';
 
-
-interface WeatherData {
-  weather: { 
-    icon: string; 
-    description: string;
-    main: string;
-  }[];
-  main: { 
-    temp: number; 
-    humidity: number;
-    feels_like: number;
-    temp_min: number;
-    temp_max: number;
-    pressure: number;
-  };
-  wind: {
-    speed: number;
-    deg: number;
-  };
-  name: string;
-}
-
-interface HourlyForecast {
-  dt: number;
-  temp: number;
-  weather: [{
-    icon: string;
-    description: string;
-  }];
-}
-
-interface WeatherForecast {
-  hourly: HourlyForecast[];
-}
-
-// Separate ImageList component with proper typing
-interface ImageListProps {
-  test_arr?: number[];
-  title: string;
-}
 
 const ImageList: React.FC<ImageListProps> = ({ test_arr = [], title }) => (
   <View>
@@ -83,9 +46,8 @@ const ImageList: React.FC<ImageListProps> = ({ test_arr = [], title }) => (
           className="mr-4"
         >
           <Image
-            source={images.spiderman} // Remove uri if images.spiderman is already an image resource
+            source={images.spiderman} // Replace with actual image
             className="w-32 h-32 rounded-lg"
-            defaultSource={require('@/assets/images/spiderman.png')} // Add a placeholder image
           />
           <Text className="mt-2 font-rubik text-[#4F5D75]">
             {`${title} ${index + 1}`}
@@ -116,8 +78,18 @@ const Home = () => {
 
   const fetchWeather = async () => {
     try {
-      const lat = 51.5074;
-      const lon = -0.1278;
+      // Request permission
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.error('Permission to access location was denied');
+        return;
+      }
+
+      // Get current position
+      let location = await Location.getCurrentPositionAsync({});
+      const lat = location.coords.latitude;
+      const lon = location.coords.longitude;
+    
       
       // Current weather
       const currentWeatherResponse = await fetch(
@@ -153,118 +125,6 @@ const Home = () => {
     });
   }, [params.filter, params.query]);
 
-  const WeatherModal = () => {
-    const formatTime = (timestamp: number) => {
-      return new Date(timestamp * 1000).toLocaleTimeString([], { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-      });
-    };
-
-    return (
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showWeather}
-        onRequestClose={() => setShowWeather(false)}
-      >
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white p-6 rounded-2xl w-11/12 max-h-[80%]">
-            {weatherData ? (
-              <ScrollView showsVerticalScrollIndicator={false}>
-                <View className="space-y-4">
-                  {/* Location and Current Weather */}
-                  <View className="items-center">
-                    <Text className="text-2xl font-rubik-bold text-[#2D3142]">
-                      {weatherData.name}
-                    </Text>
-                    <Image
-                      source={{ 
-                        uri: `https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png` 
-                      }}
-                      className="w-24 h-24"
-                    />
-                    <Text className="text-3xl font-rubik-medium">
-                      {Math.round(weatherData.main.temp)}°C
-                    </Text>
-                    <Text className="text-lg font-rubik capitalize text-[#4F5D75]">
-                      {weatherData.weather[0].description}
-                    </Text>
-                  </View>
-
-                  {/* Current Details */}
-                  <View className="bg-[#F7F7F7] p-4 rounded-xl space-y-2">
-                    <Text className="font-rubik-medium text-lg text-[#2D3142]">Details</Text>
-                    <View className="space-y-2">
-                      <Text className="font-rubik">
-                        Feels like: {Math.round(weatherData.main.feels_like)}°C
-                      </Text>
-                      <Text className="font-rubik">
-                        Min/Max: {Math.round(weatherData.main.temp_min)}°C / {Math.round(weatherData.main.temp_max)}°C
-                      </Text>
-                      <Text className="font-rubik">
-                        Humidity: {weatherData.main.humidity}%
-                      </Text>
-                      <Text className="font-rubik">
-                        Wind Speed: {Math.round(weatherData.wind.speed * 3.6)} km/h
-                      </Text>
-                      <Text className="font-rubik">
-                        Pressure: {weatherData.main.pressure} hPa
-                      </Text>
-                    </View>
-                  </View>
-
-                  {/* Hourly Forecast */}
-                  <View className="space-y-2">
-                    <Text className="font-rubik-medium text-lg text-[#2D3142]">
-                      24-Hour Forecast
-                    </Text>
-                    <ScrollView 
-                      horizontal 
-                      showsHorizontalScrollIndicator={false}
-                      className="space-x-4"
-                    >
-                      {hourlyForecast.map((hour, index) => (
-                        <View 
-                          key={index} 
-                          className="items-center bg-[#F7F7F7] p-3 rounded-xl w-20"
-                        >
-                          <Text className="font-rubik text-sm">
-                            {formatTime(hour.dt)}
-                          </Text>
-                          <Image
-                            source={{ 
-                              uri: `https://openweathermap.org/img/wn/${hour.weather[0].icon}.png` 
-                            }}
-                            className="w-10 h-10"
-                          />
-                          <Text className="font-rubik-medium">
-                            {Math.round(hour.temp)}°C
-                          </Text>
-                        </View>
-                      ))}
-                    </ScrollView>
-                  </View>
-
-                  <TouchableOpacity 
-                    onPress={() => setShowWeather(false)}
-                    className="bg-[#DA4167] py-3 rounded-lg mt-4"
-                  >
-                    <Text className="text-white text-center font-rubik-medium">
-                      Close
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </ScrollView>
-            ) : (
-              <ActivityIndicator size="large" color="#DA4167" />
-            )}
-          </View>
-        </View>
-      </Modal>
-    );
-  };
-
   const getWeatherIcon = () => {
     if (!weatherData) return 'weather-cloudy';
     const icon = weatherData.weather[0].icon;
@@ -278,89 +138,78 @@ const Home = () => {
     return 'weather-cloudy';
   };
 
-  const weatherIcon = weatherData?.weather[0].icon 
-    ? { uri: `https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png` }
-    : null;
-
-  const renderHeader = () => (
-    <View className="px-5">
-      <View className="flex-row items-center justify-between mt-5">
-        <View className="flex-row items-center">
-          <Image
-            source={{ uri: user?.avatar }}
-            className="size-12 rounded-full"
-          />
-          <View className="ml-3">
-            <Text className="text-xs font-rubik text-[#4F5D75]">Welcome back</Text>
-            <Text className="text-base font-rubik-medium text-[#2D3142]">
-              {user?.name}
-            </Text>
-          </View>
-        </View>
-        <TouchableOpacity 
-          onPress={() => setShowWeather(true)}
-          className="p-2"
-        >
-          <MaterialCommunityIcons 
-            name={getWeatherIcon()} 
-            size={28} 
-            color="#4F5D75" 
-          />
-        </TouchableOpacity>
-      </View>
-
-      <View className="mt-6">
-        <Search />
-      </View>
-
-      <View className="flex-row mt-6 border-b border-[#4F5D75]/10">
-        <TouchableOpacity 
-          onPress={() => setActiveTab('items')}
-          className={`flex-1 pb-3 ${activeTab === 'items' ? 'border-b-2 border-[#DA4167]' : ''}`}
-        >
-          <Text className={`text-center font-rubik-medium ${
-            activeTab === 'items' ? 'text-[#DA4167]' : 'text-[#4F5D75]'
-          }`}>
-            Items
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          onPress={() => setActiveTab('outfits')}
-          className={`flex-1 pb-3 ${activeTab === 'outfits' ? 'border-b-2 border-[#DA4167]' : ''}`}
-        >
-          <Text className={`text-center font-rubik-medium ${
-            activeTab === 'outfits' ? 'text-[#DA4167]' : 'text-[#4F5D75]'
-          }`}>
-            Outfits
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {activeTab === 'outfits' ? (
-        <View className="mt-6">
-          <ImageList title="Recommended" test_arr={[1,2,3,4]} />
-          <ImageList title="Favorites" test_arr={[1,2,3,4]} />
-          <ImageList title="All Outfits" test_arr={[1,2,3,4]} />
-        </View>
-      ) : (
-        <View className="mt-6">
-          <ImageList title="Favorites" test_arr={[1,2,3,4]} />
-          <ImageList title="All Items" test_arr={[1,2,3,4]} />
-        </View>
-      )}
-    </View>
-  );
-
   return (
     <SafeAreaView className="flex-1 bg-[#FFEBE7]">
-      <WeatherModal />
-      <FlatList
-        data={[]}
-        renderItem={() => null}
-        ListHeaderComponent={renderHeader}
-        showsVerticalScrollIndicator={false}
-        contentContainerClassName="pb-32"
-      />
+      <WeatherModal weatherData={weatherData} hourlyForecast={hourlyForecast} showWeather={showWeather} setShowWeather={setShowWeather} />
+      <ScrollView className="px-5">
+        <View className="flex-row items-center justify-between mt-5">
+          <TouchableOpacity 
+            className="flex-row items-center"
+            onPress={() => router.push('/profile')}
+          >
+            <Image
+              source={{ uri: user?.avatar }}
+              className="size-12 rounded-full"
+            />
+            <View className="ml-3">
+              <Text className="text-xs font-rubik text-[#4F5D75]">Welcome back</Text>
+              <Text className="text-base font-rubik-medium text-[#2D3142]">
+                {user?.name}
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            onPress={() => setShowWeather(true)}
+            className="p-2"
+          >
+            <MaterialCommunityIcons 
+              name={getWeatherIcon()} 
+              size={28} 
+              color="#4F5D75" 
+            />
+          </TouchableOpacity>
+        </View>
+
+        <View className="mt-6">
+          <Search />
+        </View>
+
+        <View className="flex-row mt-6 border-b border-[#4F5D75]/10">
+          <TouchableOpacity 
+            onPress={() => setActiveTab('outfits')}
+            className={`flex-1 pb-3 ${activeTab === 'outfits' ? 'border-b-2 border-[#DA4167]' : ''}`}
+          >
+            <Text className={`text-center font-rubik-medium ${
+              activeTab === 'outfits' ? 'text-[#DA4167]' : 'text-[#4F5D75]'
+            }`}>
+              Outfits
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            onPress={() => setActiveTab('items')}
+            className={`flex-1 pb-3 ${activeTab === 'items' ? 'border-b-2 border-[#DA4167]' : ''}`}
+          >
+            <Text className={`text-center font-rubik-medium ${
+              activeTab === 'items' ? 'text-[#DA4167]' : 'text-[#4F5D75]'
+            }`}>
+              Items
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {activeTab === 'outfits' ? (
+          <View className="mt-6">
+            <ImageList title="Recommended" test_arr={[1,2,3,4]} />
+            <ImageList title="Favorites" test_arr={[1,2,3,4]} />
+            <ImageList title="All Outfits" test_arr={[1,2,3,4]} />
+          </View>
+        ) : (
+          <View className="mt-6">
+            <ImageList title="Favorites" test_arr={[1,2,3,4]} />
+            <ImageList title="All Items" test_arr={[1,2,3,4]} />
+          </View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 };
