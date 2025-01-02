@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from 'expo-status-bar';
 
 import "./global.css";
 import GlobalProvider from "@/lib/global-provider";
@@ -28,6 +29,7 @@ export default function RootLayout() {
 
   return (
     <GlobalProvider>
+      <StatusBar style="dark" />
       <Stack screenOptions={{ headerShown: false }} />
     </GlobalProvider>
   );

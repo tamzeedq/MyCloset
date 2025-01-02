@@ -16,7 +16,6 @@ const WeatherModal: React.FC<WeatherModalProps> = ({ weatherData, hourlyForecast
         minute: '2-digit' 
       });
     };
-    console.log(hourlyForecast)
 
     return (
       <Modal
