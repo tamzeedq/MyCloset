@@ -14,6 +14,8 @@ import { useGlobalContext } from "@/lib/global-provider";
 
 import icons from "@/constants/icons";
 import { settings } from "@/constants/data";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 interface SettingsItemProp {
   icon: ImageSourcePropType;
@@ -66,7 +68,12 @@ const Profile = () => {
       >
         <View className="flex flex-row items-center justify-between mt-5">
           <Text className="text-xl font-rubik-bold">Profile</Text>
-          <Image source={icons.bell} className="size-5" />
+          <TouchableOpacity 
+            onPress={() => router.back()}
+            className="bg-[#DA4167]/50 rounded-full p-2"
+          >
+            <Feather name="x-circle" size={24} color="white" />
+          </TouchableOpacity>
         </View>
 
         <View className="flex flex-row justify-center mt-5">
@@ -84,8 +91,7 @@ const Profile = () => {
         </View>
 
         <View className="flex flex-col mt-10">
-          <SettingsItem icon={icons.calendar} title="My Bookings" />
-          <SettingsItem icon={icons.wallet} title="Payments" />
+          <SettingsItem icon={icons.calendar} title="Calendar" />
         </View>
 
         <View className="flex flex-col mt-5 border-t pt-5 border-primary-200">

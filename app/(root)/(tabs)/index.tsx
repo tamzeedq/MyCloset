@@ -44,6 +44,20 @@ const ImageList: React.FC<ImageListProps> = ({ test_arr = [], title }) => (
         <TouchableOpacity
           key={index}
           className="mr-4"
+          onPress={() => {
+            const id = (index + 1).toString();
+            router.push(
+              title.toLowerCase().includes('outfit') 
+                ? {
+                    pathname: "/(root)/outfits/[id]",
+                    params: { id }
+                  }
+                : {
+                    pathname: "/(root)/items/[id]",
+                    params: { id }
+                  }
+            );
+          }}
         >
           <Image
             source={images.spiderman} // Replace with actual image
@@ -60,7 +74,7 @@ const ImageList: React.FC<ImageListProps> = ({ test_arr = [], title }) => (
 
 const Home = () => {
   const { user } = useGlobalContext();
-  const [activeTab, setActiveTab] = useState('items');
+  const [activeTab, setActiveTab] = useState('outfits');
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [hourlyForecast, setHourlyForecast] = useState<HourlyForecast[]>([]);
   const [showWeather, setShowWeather] = useState(false);
