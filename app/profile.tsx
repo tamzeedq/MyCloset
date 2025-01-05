@@ -14,8 +14,9 @@ import { useGlobalContext } from "@/lib/global-provider";
 
 import icons from "@/constants/icons";
 import { settings } from "@/constants/data";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { JSX, Key } from "react";
 
 interface SettingsItemProp {
   icon: ImageSourcePropType;
@@ -54,7 +55,7 @@ const Profile = () => {
     const result = await logout();
     if (result) {
       Alert.alert("Success", "Logged out successfully");
-      refetch();
+      refetch({});
     } else {
       Alert.alert("Error", "Failed to logout");
     }
@@ -95,7 +96,7 @@ const Profile = () => {
         </View>
 
         <View className="flex flex-col mt-5 border-t pt-5 border-primary-200">
-          {settings.slice(2).map((item, index) => (
+          {settings.slice(2).map((item: JSX.IntrinsicAttributes & SettingsItemProp, index: Key | null | undefined) => (
             <SettingsItem key={index} {...item} />
           ))}
         </View>

@@ -14,7 +14,6 @@ import * as Location from 'expo-location';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { Card } from "@/components/Cards";
 import Search from "@/components/Search";
 import NoResults from "@/components/NoResults";
 import { useAppwrite } from "@/hooks/useAppwrite";

@@ -22,32 +22,35 @@ const AddScreen = () => {
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showTagSelector, setShowTagSelector] = useState(false);
+  const [showCategorySelector, setShowCategorySelector] = useState(false);
 
   const [itemForm, setItemForm] = useState({
+    name: '',
     description: '',
     primaryCategory: '',
     secondaryCategory: '',
   });
 
   const [outfitForm, setOutfitForm] = useState({
+    name: '',
     description: '',
     selectedTags: new Set<string>(),
     temperature: '',
   });
 
   const categoryOptions = {
-    top: ['t-shirt', 'sweater', 'blouse', 'tank top', 'shirt', 'polo'],
-    bottom: ['jeans', 'shorts', 'skirt', 'pants', 'leggings'],
-    shoes: ['sneakers', 'boots', 'sandals', 'heels', 'flats'],
+    top: ['t-shirt', 'sweater', 'blouse', 'tank top', 'shirt', 'polo', 'button-up'],
+    bottom: ['jeans', 'shorts', 'skirt', 'pants', 'joggers', 'sweatpants', 'sportwear'],
+    shoes: ['sneakers', 'boots', 'sandals', 'loafers', 'sport', 'formal'],
     accessory: ['necklace', 'ring', 'bracelet', 'earrings', 'watch', 'belt', 'scarf'],
     outerwear: ['jacket', 'coat', 'cardigan', 'hoodie'],
   };
 
   const tagOptions = {
-    occasion: ['casual', 'work', 'formal', 'party', 'date night'],
+    occasion: ['casual', 'work', 'formal', 'party', 'date night', 'vacation', 'exercise'],
     season: ['summer', 'winter', 'fall', 'spring'],
-    style: ['minimalist', 'vintage', 'streetwear', 'preppy', 'bohemian'],
-    weather: ['rainy', 'sunny', 'snowy', 'windy'],
+    style: ['minimalist', 'vintage', 'streetwear', 'preppy', 'athleisure'],
+    weather: ['rainy', 'sunny', 'snowy', 'windy', 'cloudy', 'hot', 'cold', 'warm'],
     mood: ['comfortable', 'elegant', 'cozy', 'sporty'],
   };
 
@@ -102,6 +105,16 @@ const AddScreen = () => {
     });
   };
 
+  const handleCategorySelect = (category: string, subcategory: string) => {
+    setItemForm(prev => ({
+      ...prev,
+      primaryCategory: category,
+      secondaryCategory: subcategory,
+    }));
+    setShowCategorySelector(false);
+  };
+
+
   const handleSubmit = async () => {
     if (!image) {
       Alert.alert('Image Required', 'Please add an image of your item.');
@@ -119,6 +132,84 @@ const AddScreen = () => {
       setLoading(false);
     }
   };
+
+  const renderCategorySelector = () => (
+    <View className='mb-2'>
+      <Text className="text-lg font-semibold text-[#2D3142] mb-2">
+        Category
+      </Text>
+      <TouchableOpacity
+        onPress={() => setShowCategorySelector(!showCategorySelector)}
+        className="bg-white rounded-xl px-4 py-3 shadow-sm flex-row justify-between items-center"
+      >
+        <Text className={!itemForm.secondaryCategory ? "text-[#9BA0AF]" : "text-[#2D3142]"}>
+          {!itemForm.secondaryCategory ? "Select category" : `${itemForm.primaryCategory} - ${itemForm.secondaryCategory}`}
+        </Text>
+        <MaterialCommunityIcons
+          name={showCategorySelector ? "chevron-up" : "chevron-down"}
+          size={24}
+          color="#4F5D75"
+        />
+      </TouchableOpacity>
+
+      {showCategorySelector && (
+        <View className="bg-white rounded-xl shadow-sm mt-2 p-4">
+          {Object.entries(categoryOptions).map(([category, subcategories]) => (
+            <View key={category} className="mb-4">
+              <Text className="text-[#2D3142] font-semibold mb-2 capitalize">
+                {category}
+              </Text>
+              <View className="flex-row flex-wrap gap-2">
+                {subcategories.map(subcategory => (
+                  <TouchableOpacity
+                    key={subcategory}
+                    onPress={() => handleCategorySelect(category, subcategory)}
+                    className={`rounded-full px-3 py-1 ${
+                      itemForm.primaryCategory === category && 
+                      itemForm.secondaryCategory === subcategory
+                        ? 'bg-[#DA4167]'
+                        : 'bg-gray-100'
+                    }`}
+                  >
+                    <Text className={
+                      itemForm.primaryCategory === category && 
+                      itemForm.secondaryCategory === subcategory
+                        ? 'text-white'
+                        : 'text-[#4F5D75]'
+                    }>
+                      {subcategory}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
+
+      {itemForm.secondaryCategory && (
+        <View className="flex-row flex-wrap gap-2 mt-2">
+          <View className="bg-[#DA4167] rounded-full flex-row items-center px-3 py-1">
+            <Text className="text-white mr-1">
+              {`${itemForm.primaryCategory} - ${itemForm.secondaryCategory}`}
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                setItemForm(prev => ({
+                  ...prev,
+                  primaryCategory: '',
+                  secondaryCategory: '',
+                }));
+              }}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
+              <MaterialCommunityIcons name="close" size={16} color="white" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </View>
+  );
 
   return (
     <SafeAreaView className="flex-1 bg-[#FFEBE7]">
@@ -220,7 +311,19 @@ const AddScreen = () => {
               {type === 'item' ? (
                 <>
                   <View className="space-y-4">
-                    <View>
+                    <View className='mb-2'>
+                      <Text className="text-lg font-semibold text-[#2D3142] mb-2">
+                        Name
+                      </Text>
+                      <TextInput
+                        value={itemForm.name}
+                        onChangeText={(text) => setItemForm(prev => ({ ...prev, name: text }))}
+                        className="bg-white rounded-xl px-4 py-3 text-[#2D3142] shadow-sm"
+                        placeholder="E.g., Blue cotton t-shirt"
+                        placeholderTextColor="#9BA0AF"
+                      />
+                    </View>
+                    <View className='mb-2'>
                       <Text className="text-lg font-semibold text-[#2D3142] mb-2">
                         Description
                       </Text>
@@ -228,87 +331,31 @@ const AddScreen = () => {
                         value={itemForm.description}
                         onChangeText={(text) => setItemForm(prev => ({ ...prev, description: text }))}
                         className="bg-white rounded-xl px-4 py-3 text-[#2D3142] shadow-sm"
-                        placeholder="E.g., Blue cotton t-shirt"
+                        placeholder="E.g., Blue cotton t-shirt from Zara"
                         placeholderTextColor="#9BA0AF"
                       />
                     </View>
 
-                    <View>
-                      <Text className="text-lg font-semibold text-[#2D3142] mb-2">
-                        Category
-                      </Text>
-                      <View className="bg-white rounded-xl shadow-sm">
-                        <RNPickerSelect
-                          onValueChange={(value) => setItemForm(prev => ({
-                            ...prev,
-                            primaryCategory: value,
-                            secondaryCategory: '',
-                          }))}
-                          value={itemForm.primaryCategory}
-                          items={Object.keys(categoryOptions).map(category => ({
-                            label: category.charAt(0).toUpperCase() + category.slice(1),
-                            value: category,
-                          }))}
-                          style={{
-                            inputIOS: {
-                              fontSize: 16,
-                              paddingVertical: 12,
-                              paddingHorizontal: 16,
-                              color: '#2D3142',
-                            },
-                            inputAndroid: {
-                              fontSize: 16,
-                              paddingVertical: 12,
-                              paddingHorizontal: 16,
-                              color: '#2D3142',
-                            },
-                          }}
-                          placeholder={{ label: 'Select category', value: null }}
-                        />
-                      </View>
-                    </View>
-
-                    {itemForm.primaryCategory && (
-                      <View>
-                        <Text className="text-lg font-semibold text-[#2D3142] mb-2">
-                          Subcategory
-                        </Text>
-                        <View className="bg-white rounded-xl shadow-sm">
-                          <RNPickerSelect
-                            onValueChange={(value) => setItemForm(prev => ({
-                              ...prev,
-                              secondaryCategory: value,
-                            }))}
-                            value={itemForm.secondaryCategory}
-                            items={categoryOptions[itemForm.primaryCategory as keyof typeof categoryOptions].map(subCategory => ({
-                              label: subCategory.charAt(0).toUpperCase() + subCategory.slice(1),
-                              value: subCategory,
-                            }))}
-                            style={{
-                              inputIOS: {
-                                fontSize: 16,
-                                paddingVertical: 12,
-                                paddingHorizontal: 16,
-                                color: '#2D3142',
-                              },
-                              inputAndroid: {
-                                fontSize: 16,
-                                paddingVertical: 12,
-                                paddingHorizontal: 16,
-                                color: '#2D3142',
-                              },
-                            }}
-                            placeholder={{ label: 'Select subcategory', value: null }}
-                          />
-                        </View>
-                      </View>
-                    )}
+                    
+                    {renderCategorySelector()}
                   </View>
                 </>
               ) : (
                 <>
                   <View className="space-y-4">
-                    <View>
+                    <View className='mb-2'>
+                      <Text className="text-lg font-semibold text-[#2D3142] mb-2">
+                        Name
+                      </Text>
+                      <TextInput
+                        value={outfitForm.name}
+                        onChangeText={(text) => setOutfitForm(prev => ({ ...prev, name: text }))}
+                        className="bg-white rounded-xl px-4 py-3 text-[#2D3142] shadow-sm"
+                        placeholder="E.g., Sweatsuit for a cozy day"
+                        placeholderTextColor="#9BA0AF"
+                      />
+                    </View>
+                    <View className='mb-2'>
                       <Text className="text-lg font-semibold text-[#2D3142] mb-2">
                         Description
                       </Text>
@@ -321,7 +368,7 @@ const AddScreen = () => {
                       />
                     </View>
 
-                    <View>
+                    <View className='mb-2'>
                       <Text className="text-lg font-semibold text-[#2D3142] mb-2">
                         Tags
                       </Text>
@@ -394,7 +441,7 @@ const AddScreen = () => {
 
                     <View>
                       <Text className="text-lg font-semibold text-[#2D3142] mb-2">
-                        Ideal Temperature (°F)
+                        Ideal Temperature (°C)
                       </Text>
                       <TextInput
                         value={outfitForm.temperature}
