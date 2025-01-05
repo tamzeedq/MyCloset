@@ -14,6 +14,9 @@ import { useGlobalContext } from "@/lib/global-provider";
 
 import icons from "@/constants/icons";
 import { settings } from "@/constants/data";
+import { Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { JSX, Key } from "react";
 
 interface SettingsItemProp {
   icon: ImageSourcePropType;
@@ -52,7 +55,7 @@ const Profile = () => {
     const result = await logout();
     if (result) {
       Alert.alert("Success", "Logged out successfully");
-      refetch();
+      refetch({});
     } else {
       Alert.alert("Error", "Failed to logout");
     }
@@ -66,7 +69,12 @@ const Profile = () => {
       >
         <View className="flex flex-row items-center justify-between mt-5">
           <Text className="text-xl font-rubik-bold">Profile</Text>
-          <Image source={icons.bell} className="size-5" />
+          <TouchableOpacity 
+            onPress={() => router.back()}
+            className="bg-[#DA4167]/50 rounded-full p-2"
+          >
+            <Feather name="x-circle" size={24} color="white" />
+          </TouchableOpacity>
         </View>
 
         <View className="flex flex-row justify-center mt-5">
@@ -84,12 +92,11 @@ const Profile = () => {
         </View>
 
         <View className="flex flex-col mt-10">
-          <SettingsItem icon={icons.calendar} title="My Bookings" />
-          <SettingsItem icon={icons.wallet} title="Payments" />
+          <SettingsItem icon={icons.calendar} title="Calendar" />
         </View>
 
         <View className="flex flex-col mt-5 border-t pt-5 border-primary-200">
-          {settings.slice(2).map((item, index) => (
+          {settings.slice(2).map((item: JSX.IntrinsicAttributes & SettingsItemProp, index: Key | null | undefined) => (
             <SettingsItem key={index} {...item} />
           ))}
         </View>

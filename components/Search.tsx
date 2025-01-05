@@ -27,7 +27,8 @@ const Search = () => {
           value={search}
           onChangeText={handleSearch}
           placeholder="Search for anything"
-          className="text-sm font-rubik text-black-300 ml-2 flex-1"
+          placeholderTextColor="rgba(31, 36, 46, 0.5)"
+          className="text-sm font-rubik text-[#2D3142] ml-2 flex-1"
         />
       </View>
 
